@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Letter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: #f9f4ef;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem 1rem;
+    }
+
+    #prompt {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    #prompt:hover { transform: scale(1.07); }
+
+    #prompt .label {
+      display: block;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.4rem, 9vw, 3.6rem);
+      font-weight: 400;
+      background: linear-gradient(90deg, #9b59b6, #8e44ad, #732d91);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+      margin-bottom: 18px;
+    }
+
+    #prompt .emoji {
+      font-size: clamp(72px, 18vw, 110px);
+      line-height: 1;
+      display: block;
+    }
+
+    #prompt .hint {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: #b89ccf;
+      letter-spacing: 0.06em;
+    }
+
+    #letterContainer {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.9s ease forwards;
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .envelope-top {
+      width: min(500px, 90vw);
+      height: 28px;
+      background: linear-gradient(135deg, #e8ddd0 50%, #ddd0c0 50%);
+      border-radius: 6px 6px 0 0;
+      border: 1.5px solid #c9b89a;
+      border-bottom: none;
+    }
+
+    .letter {
+      background: #fffdf7;
+      width: min(500px, 90vw);
+      padding: clamp(28px, 6vw, 50px) clamp(24px, 6vw, 46px);
+      border: 1.5px solid #c9b89a;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+      color: #5a4635;
+      line-height: 1.85;
+      position: relative;
+      min-height: 260px;
+    }
+
+    .letter::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: 1px;
+      background: rgba(180,150,110,0.3);
+    }
+
+    .wax-seal {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #b36bcc, #732d91 60%, #4a1c6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin: -26px auto 0;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 3px 10px rgba(114,45,145,0.35);
+    }
+
+    #letterText {
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #8e44ad;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blink 0.7s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="prompt">
+    <span class="label">Click to Reveal</span>
+    <span class="emoji">💌</span>
+    <p class="hint">tap to open</p>
+  </div>
+
+  <div id="letterContainer">
+    <div class="envelope-top"></div>
+    <div class="letter">
+      <div id="letterText"></div><span class="cursor" id="cursor"></span>
+    </div>
+    <div class="wax-seal">✦</div>
+  </div>
+
+  <script>
+    const prompt = document.getElementById('prompt');
+    const letterContainer = document.getElementById('letterContainer');
+    const letterTextEl = document.getElementById('letterText');
+    const cursor = document.getElementById('cursor');
+
+    const message = `Dear Ismail,
+
+On this special day, I send you wishes from my whole heart.
+
+May your year ahead be filled with laughter, unforgettable moments, and endless happiness.
+
+Here's to more dreams, more smiles, and more beautiful days like today.
+
+Happy 20th Birthday! 🎂`;
+
+    prompt.addEventListener('click', () => {
+      prompt.style.display = 'none';
+      letterContainer.style.display = 'flex';
+      typeMessage(message);
+    });
+
+    function typeMessage(text) {
+      let index = 0;
+      const interval = setInterval(() => {
+        letterTextEl.textContent = text.slice(0, index);
+        index++;
+        if (index > text.length) {
+          clearInterval(interval);
+          cursor.style.display = 'none';
+        }
+      }, 38);
+    }
+  </script>
+
+</body>
+</html>
