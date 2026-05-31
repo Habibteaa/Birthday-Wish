@@ -1,246 +1,312 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-  <meta charset="UTF-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Happy Birthday</title>  
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <style>  
-    body {  
-      margin: 0;  
-      background: #f9f4ef;  
-      overflow: hidden;  
-      font-family: Arial, sans-serif;  
-    }  
-  
-    /* Banner */  
-    .banner {  
-      position: fixed;  
-      top: 20px;  
-      width: 100%;  
-      display: flex;  
-      justify-content: center;  
-      animation: bannerMove 8s ease-in-out infinite alternate;  
-      z-index: 10;  
-    }  
-    @keyframes bannerMove {  
-      0% { transform: translateX(0); }  
-      100% { transform: translateX(-30px); }  
-    }  
-    .flag {  
-      background: linear-gradient(90deg, #9b59b6, #8e44ad, #732d91);  
-      color: #ffffff;  
-      font-size: 30px;  
-      font-family: 'Pacifico', cursive;  
-      padding: 20px 15px 35px 15px;  
-      margin: 0 5px;  
-      text-align: center;  
-      clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);  
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);  
-      letter-spacing: 1px;  
-      text-shadow: 0px 2px 4px rgba(0,0,0,0.2);  
-    }  
-  
-    /* Cake (position adjusted) */  
-    .cake {  
-      position: absolute;  
-      font-size: 150px;  
-      left: 50%;  
-      top: 42%;  
-      transform: translateX(-50%);  
-      text-shadow: 0 0 15px rgba(0,0,0,0.3);  
-      z-index: 5;  
-    }  
-  
-    /* Age (Stylish + position adjusted) */  
-    .age {  
-      position: absolute;  
-      top: 20%;  
-      left: 50%;  
-      transform: translateX(-50%);  
-      font-size: 120px;  
-      font-weight: bold;  
-      background: linear-gradient(45deg, #8E44AD, #C39BD3, #9B59B6);  
-      -webkit-background-clip: text;  
-      -webkit-text-fill-color: transparent;  
-      text-shadow: 
-        2px 2px 0px #5E3370, 
-        4px 4px 10px rgba(0,0,0,0.4);  
-      letter-spacing: 2px;  
-      font-family: 'Pacifico', cursive;  
-      z-index: 6;  
-    }  
-  
-    /* Continue Button */  
-    .continue-btn {  
-      position: absolute;  
-      top: 78%;  
-      left: 50%;  
-      transform: translateX(-50%);  
-      padding: 15px 30px;  
-      font-size: 18px;  
-      background: linear-gradient(90deg, #8E44AD, #9B59B6);  
-      color: #fff;  
-      border: none;  
-      border-radius: 30px;  
-      cursor: pointer;  
-      display: flex;  
-      align-items: center;  
-      gap: 10px;  
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);  
-      transition: transform 0.2s ease;  
-      opacity: 1;  
-      z-index: 20;  
-    }  
-    .continue-btn:hover {  
-      transform: translateX(-50%) scale(1.05);  
-    }  
-  
-    canvas {  
-      position: absolute;  
-      top: 0;  
-      left: 0;  
-      z-index: 1;  
-    }  
-  </style>  
-</head>  
-<body>  
-  <div class="banner" id="banner"></div>  
-  <div class="age">20</div>  
-  <div class="cake">🎂</div>  
-  <button class="continue-btn" onclick="window.location.href='maze.html'">  
-    Continue →  
-  </button>  
-  <canvas id="canvas"></canvas>  
-  
-  <script>  
-    // Banner text  
-    const bannerText = "HAPPY BIRTHDAY ISMAIL";  
-    const bannerContainer = document.getElementById('banner');  
-    for (let char of bannerText) {  
-      const div = document.createElement('div');  
-      div.className = 'flag';  
-      div.textContent = char === " " ? "" : char;  
-      bannerContainer.appendChild(div);  
-    }  
-  
-    const canvas = document.getElementById('canvas');  
-    const ctx = canvas.getContext('2d');  
-    let width = window.innerWidth;  
-    let height = window.innerHeight;  
-    canvas.width = width;  
-    canvas.height = height;  
-  
-    const balloons = [];  
-    const confetti = [];  
-  
-    const balloonColors = ['#FF3B3B', '#3B83FF', '#4BC04B', '#FFD133', '#FF69B4', '#9966FF'];  
-    const confettiColors = ['#FF3B3B', '#3B83FF', '#4BC04B', '#FFD133', '#FF69B4', '#9966FF'];  
-  
-    class Balloon {  
-      constructor() {  
-        this.side = Math.random() < 0.5 ? 'left' : 'right';  
-        this.x = this.side === 'left'  
-          ? Math.random() * (width * 0.3)  
-          : width * 0.7 + Math.random() * (width * 0.3);  
-        this.y = height + 100;  
-        this.size = 40 + Math.random() * 20;  
-        this.color = balloonColors[Math.floor(Math.random() * balloonColors.length)];  
-        this.speed = 1 + Math.random();  
-        this.angle = Math.random() * Math.PI * 2;  
-      }  
-      draw() {  
-        ctx.save();  
-        ctx.translate(this.x, this.y);  
-        ctx.scale(1, 1.2);  
-        ctx.beginPath();  
-        ctx.ellipse(0, 0, this.size * 0.6, this.size, 0, 0, Math.PI * 2);  
-        ctx.fillStyle = this.color;  
-        ctx.fill();  
-        ctx.beginPath();  
-        ctx.arc(-this.size * 0.2, -this.size * 0.3, this.size * 0.15, 0, Math.PI * 2);  
-        ctx.fillStyle = "rgba(255,255,255,0.6)";  
-        ctx.fill();  
-        ctx.restore();  
-        ctx.beginPath();  
-        ctx.moveTo(this.x, this.y + this.size);  
-        ctx.lineTo(this.x - 5, this.y + this.size + 10);  
-        ctx.lineTo(this.x + 5, this.y + this.size + 10);  
-        ctx.closePath();  
-        ctx.fillStyle = this.color;  
-        ctx.fill();  
-      }  
-      update() {  
-        this.y -= this.speed;  
-        this.x += Math.sin(this.angle) * 0.5;  
-        this.angle += 0.02;  
-        if (this.y + this.size < -50) {  
-          this.y = height + 50;  
-          this.side = Math.random() < 0.5 ? 'left' : 'right';  
-          this.x = this.side === 'left'  
-            ? Math.random() * (width * 0.3)  
-            : width * 0.7 + Math.random() * (width * 0.3);  
-        }  
-        this.draw();  
-      }  
-    }  
-  
-    class Confetti {  
-      constructor() {  
-        this.side = Math.random() < 0.5 ? 'left' : 'right';  
-        this.x = this.side === 'left'  
-          ? Math.random() * (width * 0.3)  
-          : width * 0.7 + Math.random() * (width * 0.3);  
-        this.y = Math.random() * -height;  
-        this.size = 6 + Math.random() * 4;  
-        this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];  
-        this.speed = 2 + Math.random() * 3;  
-        this.angle = Math.random() * Math.PI * 2;  
-        this.rotationSpeed = (Math.random() - 0.5) * 0.2;  
-      }  
-      draw() {  
-        ctx.save();  
-        ctx.translate(this.x, this.y);  
-        ctx.rotate(this.angle);  
-        ctx.fillStyle = this.color;  
-        ctx.fillRect(-this.size/2, -this.size*2, this.size, this.size*4);  
-        ctx.restore();  
-      }  
-      update() {  
-        this.y += this.speed;  
-        this.angle += this.rotationSpeed;  
-        if (this.y > height + 20) {  
-          this.y = -20;  
-          this.side = Math.random() < 0.5 ? 'left' : 'right';  
-          this.x = this.side === 'left'  
-            ? Math.random() * (width * 0.3)  
-            : width * 0.7 + Math.random() * (width * 0.3);  
-        }  
-        this.draw();  
-      }  
-    }  
-  
-    function init() {  
-      for (let i = 0; i < 20; i++) balloons.push(new Balloon());  
-      for (let i = 0; i < 80; i++) confetti.push(new Confetti());  
-    }  
-  
-    function animate() {  
-      ctx.clearRect(0, 0, width, height);  
-      balloons.forEach(b => b.update());  
-      confetti.forEach(c => c.update());  
-      requestAnimationFrame(animate);  
-    }  
-  
-    init();  
-    animate();  
-  
-    window.addEventListener('resize', () => {  
-      width = window.innerWidth;  
-      height = window.innerHeight;  
-      canvas.width = width;  
-      canvas.height = height;  
-    });  
-  </script>  
-</body>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Some Dedicated Songs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: #f9f4ef;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Amiri', serif;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.6rem, 9vw, 4.2rem);
+      font-weight: 400;
+      background: linear-gradient(90deg, #9b59b6, #8e44ad, #732d91);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #a07ab8;
+      margin-bottom: 2.4rem;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    .player-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .track-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 14px rgba(142,68,173,0.10);
+      border: 1px solid rgba(142,68,173,0.13);
+      transition: box-shadow 0.2s;
+    }
+
+    .track-card.active {
+      box-shadow: 0 4px 22px rgba(142,68,173,0.22);
+      border-color: rgba(142,68,173,0.32);
+    }
+
+    .track-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .play-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #9b59b6, #732d91);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .play-btn:hover { opacity: 0.88; transform: scale(1.06); }
+    .play-btn:active { transform: scale(0.96); }
+
+    .play-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    .track-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .track-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #4a1c6b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .track-artist {
+      font-size: 0.85rem;
+      color: #a07ab8;
+      margin-top: 2px;
+    }
+
+    .track-time {
+      font-size: 0.82rem;
+      color: #b89ccf;
+      flex-shrink: 0;
+      min-width: 68px;
+      text-align: right;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #ede0f7;
+      border-radius: 99px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #9b59b6, #732d91);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.4s linear;
+    }
+
+    .waveform {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 28px;
+    }
+
+    .bar {
+      width: 3px;
+      border-radius: 99px;
+      background: #dcc8ef;
+      transition: background 0.3s;
+    }
+
+    .track-card.active .bar { background: #9b59b6; }
+
+    .bar.animated {
+      animation: pulse-bar var(--dur, 0.5s) ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse-bar {
+      from { transform: scaleY(0.3); }
+      to   { transform: scaleY(1); }
+    }
+
+    .continue-btn {
+      margin-top: 2.4rem;
+      padding: 13px 38px;
+      font-size: 1rem;
+      font-family: 'Amiri', serif;
+      font-weight: 700;
+      background: linear-gradient(90deg, #8E44AD, #9B59B6);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      letter-spacing: 0.03em;
+    }
+
+    .continue-btn:hover { opacity: 0.88; transform: scale(1.04); }
+    .continue-btn:active { transform: scale(0.97); }
+
+    @media (max-width: 480px) {
+      .player-list { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Some Dedicated Songs</h1>
+  <p class="subtitle">just for you ♡</p>
+
+  <div class="player-list" id="playerList"></div>
+
+  <button class="continue-btn" onclick="window.location.href='maze.html'">Continue →</button>
+
+  <script>
+    const tracks = [
+      { name: "Kuch bhi", artist: "<3", src: "song1.mp3", duration: "0:40" },
+      { name: "Kuch bhii", artist: "<3", src: "song2.mp3", duration: "01:00" },
+      { name: "Kuch bhiii", artist: "<3", src: "song3.mp3", duration: "0:46" },
+    ];
+
+    const BAR_COUNT = 22;
+    const HEIGHTS = [40,55,70,85,60,90,75,50,95,65,80,45,88,58,72,42,67,82,52,78,62,48];
+
+    let currentIdx = -1;
+    let audio = new Audio();
+    let animFrames = {};
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function buildCards() {
+      const list = document.getElementById('playerList');
+      tracks.forEach((t, i) => {
+        const card = document.createElement('div');
+        card.className = 'track-card';
+        card.id = 'card-' + i;
+
+        const bars = Array.from({length: BAR_COUNT}, (_, b) => {
+          const h = HEIGHTS[b % HEIGHTS.length];
+          const dur = (0.3 + (b % 7) * 0.08).toFixed(2);
+          return `<span class="bar" style="height:${h}%;--dur:${dur}s"></span>`;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="track-top">
+            <button class="play-btn" id="btn-${i}" aria-label="Play ${t.name}" onclick="toggleTrack(${i})">
+              ${playIcon()}
+            </button>
+            <div class="track-info">
+              <div class="track-name">${t.name}</div>
+              <div class="track-artist">${t.artist}</div>
+            </div>
+            <div class="track-time" id="time-${i}">0:00 / ${t.duration}</div>
+          </div>
+          <div class="waveform" id="wave-${i}">${bars}</div>
+          <div class="progress-bar" onclick="seekTrack(event, ${i})">
+            <div class="progress-fill" id="prog-${i}"></div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function playIcon() {
+      return `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+    }
+
+    function pauseIcon() {
+      return `<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>`;
+    }
+
+    function toggleTrack(i) {
+      if (currentIdx === i) {
+        if (audio.paused) {
+          audio.play();
+          setPlaying(i, true);
+        } else {
+          audio.pause();
+          setPlaying(i, false);
+        }
+      } else {
+        if (currentIdx >= 0) resetCard(currentIdx);
+        currentIdx = i;
+        audio.src = tracks[i].src;
+        audio.play().catch(() => {});
+        setPlaying(i, true);
+      }
+    }
+
+    function setPlaying(i, playing) {
+      document.getElementById('btn-' + i).innerHTML = playing ? pauseIcon() : playIcon();
+      document.getElementById('card-' + i).classList.toggle('active', playing);
+      const bars = document.querySelectorAll('#wave-' + i + ' .bar');
+      bars.forEach(b => { playing ? b.classList.add('animated') : b.classList.remove('animated'); });
+    }
+
+    function resetCard(i) {
+      setPlaying(i, false);
+      document.getElementById('prog-' + i).style.width = '0%';
+    }
+
+    function seekTrack(e, i) {
+      if (currentIdx !== i) return;
+      const bar = e.currentTarget;
+      const ratio = e.offsetX / bar.offsetWidth;
+      if (audio.duration) audio.currentTime = ratio * audio.duration;
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (currentIdx < 0) return;
+      const pct = audio.duration ? (audio.currentTime / audio.duration * 100) : 0;
+      document.getElementById('prog-' + currentIdx).style.width = pct.toFixed(1) + '%';
+      document.getElementById('time-' + currentIdx).textContent =
+        formatTime(audio.currentTime) + ' / ' + tracks[currentIdx].duration;
+    });
+
+    audio.addEventListener('ended', () => {
+      if (currentIdx >= 0) resetCard(currentIdx);
+    });
+
+    buildCards();
+  </script>
+</body>
 </html>
